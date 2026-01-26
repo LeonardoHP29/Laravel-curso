@@ -93,8 +93,8 @@
           </div>
         </div>
 
-        <div class="flex">
-          <div class="relative pt-1">
+        <div class="flex items-center pt-1">
+          <div class="relative ">
             <button
               id="toggle-theme-menu"
               class="rounded-full text-slate-500 transition-colors hover:text-sky-500 focus:ring-2 focus:ring-slate-200 focus:ring-offset-1 focus:ring-offset-transparent"
@@ -216,15 +216,53 @@
               </button>
             </div>
           </div>
-          <button
-            class="ml-4 rounded-full text-slate-500 transition-colors hover:text-sky-500 focus:ring-2 focus:ring-slate-200 focus:ring-offset-1"
-          >
-            <img
-              class="h-6 w-6 rounded-full"
-              src="https://ui-avatars.com/api?name=Jorge+Garcia"
-              alt="Jorge García"
-            />
-          </button>
+          @auth
+              <x-dropdown>
+                  <x-slot:trigger>
+                      <button class="ml-4 rounded-full text-slate-500 transition-colors hover:text-sky-500 focus:ring-2 focus:ring-slate-200 focus:ring-offset-1">
+                          <img
+                              class="h-6 w-6 rounded-full"
+                              src="https://ui-avatars.com/api?name={{ urlencode(Auth::user()->name) }}"
+                              alt="{{ Auth::user()->name }}"
+                          />
+                      </button>
+                  </x-slot:trigger>
+                  <x-slot:content>
+                      <x-dropdown-link :href="route('dashboard')">
+                          {{ __('Dashboard') }}
+                      </x-dropdown-link>
+                      <x-dropdown-link :href="route('profile.edit')">
+                          {{ __('Profile') }}
+                      </x-dropdown-link>
+                      <form method="POST" action="{{ route('logout') }}">
+                          @csrf
+                          <x-responsive-nav-link :href="route('logout')"
+                              onclick="event.preventDefault();
+                              this.closest('form').submit();">
+                              {{ __('Log Out') }}
+                          </x-responsive-nav-link>
+                      </form>
+                  </x-slot:content>
+              </x-dropdown>
+          @else
+              <x-dropdown>
+                  <x-slot:trigger>
+                      <button class="ml-4 rounded-full text-slate-500 transition-colors hover:text-sky-500 focus:ring-2 focus:ring-slate-200 focus:ring-offset-1">
+                          <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                          </svg>
+                      </button>
+                  </x-slot:trigger>
+                  <x-slot:content>
+                      <x-dropdown-link href="{{ route('login') }}">
+                          {{ __('Log in') }}
+                      </x-dropdown-link>
+                      <x-dropdown-link href="{{ route('register') }}">
+                          {{ __('Register') }}
+                      </x-dropdown-link>
+                  </x-slot:content>
+              </x-dropdown>
+          @endauth
         </div>
       </div>
       <div id="mobile-menu" class="hidden space-y-1 border-t pb-3 pt-2">
